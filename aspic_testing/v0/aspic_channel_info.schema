@@ -1,0 +1,23 @@
+# -*- python -*-
+{
+    'schema_name' : 'aspic_channel_info',
+    'schema_version' : 0,
+    'chip_id' : str,
+    'test_type' : str,
+    'GAIN' : str,
+    'RC' : str,
+    'clock_file' : str,
+    'attenuator_start' : str, 
+    'data_file' : str,
+    'activity_description' : str,
+    'BEB_temperature' : float,
+    'test_passed' : bool,
+    'channel_00' : float,
+    'channel_01' : float,
+    'channel_02' : float,
+    'channel_03' : float,
+    'channel_04' : float,
+    'channel_05' : float,
+    'channel_06' : float,
+    'channel_07' : float,
+}
