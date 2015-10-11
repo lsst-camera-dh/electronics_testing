@@ -1,14 +1,17 @@
 #!/usr/bin/env python
-import lcatr.schema
+#import lcatr.schema
+import os
 
 def validate(schema, **kwds):
-    return lcatr.schema.valid(lcatr.schema.get(schema), **kwds)
+    pass
+#    return lcatr.schema.valid(lcatr.schema.get(schema), **kwds)
 
 class SocketTestSummary(object):
     _mapping = {'TEMP' : '_temp',
                 'GAIN' : '_channel',
                 'NOISE' : '_noise',
                 'LINEAR18' : '_channel',
+                'LINEAR16' : '_pass_fail',
                 'XTALK' : '_pass_fail',
                 'CONSO' : '_pass_fail'}
     def __init__(self, summary_file):
@@ -16,23 +19,26 @@ class SocketTestSummary(object):
     def _test_type(self, line):
         return line.split()[4]
     def run_validator(self, test_type, stanza):
-        return exec("self.validate%s(stanza)" % self._mapping[test_type])
-    def process_files(self):
+        return eval("self.validate%s(stanza)" % self._mapping[test_type])
+    def process_file(self):
         lines = open(self.summary_file).readlines()
-        stanzas = {}
+        #stanzas = {}
         stanza = None
+        i = 0
+        j = 1
         while (i < len(lines)):
-            i = 0
             if lines[i].startswith('chip'):
                 if stanza is not None:
                     # Process the existing stanza
+                    j+=1
                     self.run_validator(test_type, stanza)
                 test_type = self._test_type(lines[i])
                 stanza = []
             if lines[i].strip() != '':
                 # Add non-empty lines to current stanza
-                stanzas.append(lines[i])
+                stanza.append(lines[i])
             i += 1
+        print "number of stanzas processed : ", j
     def _parse_header_line(self, line):
         tokens = line.split()
         data = {'chip_id' : tokens[0],
@@ -47,8 +53,8 @@ class SocketTestSummary(object):
     def validate_temp(self, stanza):
         data = self._parse_header_line(stanza[0])
         data['test_passed'] = stanza[1].startswith('Passed')
-        data['temperature'] = float(stanza[4].strip())
-        data['power_level'] = float(stanza[5].strip())
+        data['temperature'] = float(stanza[3].strip())
+        data['power_level'] = float(stanza[4].strip())
         validate('aspic_temp', **data)
     def validate_channel(self, stanza):
         data = self._parse_header_line(stanza[0])
@@ -63,4 +69,13 @@ class SocketTestSummary(object):
         for i, value in zip(range(8), stanza[3].split()):
             data['channel_%02i' % i] = float(value)
     def validate_pass_fail(self, stanza):
-        pass
+        data = self._parse_header_line(stanza[0])
+        data['test_passed'] = stanza[1].startswith('Passed')
+
+
+if __name__ == "__main__":
+    import sys
+    filename = sys.argv[1]
+    summary = SocketTestSummary(filename)
+    summary.process_file()
+
