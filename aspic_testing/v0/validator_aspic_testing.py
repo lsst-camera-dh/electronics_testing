@@ -1,10 +1,11 @@
 #!/usr/bin/env python
-#import lcatr.schema
+import lcatr.schema
 import os
 
 def validate(schema, **kwds):
-    pass
-#    return lcatr.schema.valid(lcatr.schema.get(schema), **kwds)
+    results = lcatr.schema.valid(lcatr.schema.get(schema), **kwds)
+    lcatr.schema.write_file(results)
+    lcatr.schema.validate_file()
 
 class SocketTestSummary(object):
     _mapping = {'TEMP' : '_temp',
@@ -27,7 +28,7 @@ class SocketTestSummary(object):
         i = 0
         j = 1
         while (i < len(lines)):
-            if lines[i].startswith('chip'):
+            if lines[i].startswith('chip') :
                 if stanza is not None:
                     # Process the existing stanza
                     j+=1
@@ -38,6 +39,9 @@ class SocketTestSummary(object):
                 # Add non-empty lines to current stanza
                 stanza.append(lines[i])
             i += 1
+        #need to run the very last stanza separately, as the files
+        #do not stop with a line starting with 'chip'.
+        self.run_validator(test_type, stanza)
         print "number of stanzas processed : ", j
     def _parse_header_line(self, line):
         tokens = line.split()
@@ -66,16 +70,21 @@ class SocketTestSummary(object):
     def validate_noise(self, stanza):
         data = self._parse_header_line(stanza[0])
         data['test_passed'] = stanza[1].startswith('Passed')
+        data['BEB_temperature'] = 0.  # to be filled
         for i, value in zip(range(8), stanza[3].split()):
             data['channel_%02i' % i] = float(value)
+        validate('aspic_noise_info', **data)
     def validate_pass_fail(self, stanza):
         data = self._parse_header_line(stanza[0])
+        data['BEB_temperature'] = 0.  # to be filled
         data['test_passed'] = stanza[1].startswith('Passed')
-
+        validate('aspic_pass_fail', **data)
 
 if __name__ == "__main__":
     import sys
-    filename = sys.argv[1]
+    print "executing validator_test_job.py"
+    #defined as a symlink by the producer script
+    filename = "results_file"
     summary = SocketTestSummary(filename)
     summary.process_file()
 
