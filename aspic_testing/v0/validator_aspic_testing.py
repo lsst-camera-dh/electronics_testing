@@ -14,8 +14,9 @@ class SocketTestSummary(object):
                 'LINEAR16' : '_pass_fail',
                 'XTALK' : '_pass_fail',
                 'CONSO' : '_pass_fail'}
-    def __init__(self, summary_file):
+    def __init__(self, summary_file, rawfile_path):
         self.summary_file = summary_file
+        self.rawfile_path = rawfile_path
     def _test_type(self, line):
         return line.split()[4]
     def run_validator(self, test_type, stanza):
@@ -62,8 +63,12 @@ class SocketTestSummary(object):
                 'clock_file' : tokens[3],
                 'test_type' : tokens[4],
                 'attenuator_start' : tokens[5],
-                'data_file' : '_'.join(tokens[6:8]),
+                'data_file' : tokens[7],
                 'activity_description' : ' '.join(tokens[8:])}
+
+        relpath = os.path.join(self.rawfile_path,data['data_file'])
+        print relpath, os.path.exists(relpath)
+        lcatr.schema.fileref.make(os.path.relpath(relpath))
         return data
     def validate_temp(self, stanza):
         data = self._parse_header_line(stanza[0])
@@ -92,10 +97,17 @@ class SocketTestSummary(object):
         return validate('aspic_pass_fail', **data)
 
 if __name__ == "__main__":
-    import sys
+    import sys, glob
+    from lcatr.harness import config
+
     print "executing validator_test_job.py"
+    cfg=config.Config()
     #defined as a symlink by the producer script
-    filename = "results_file"
-    summary = SocketTestSummary(filename)
+    basedir = os.environ['ASPIC_BASE_DIR']
+    input_file = glob.glob(os.path.join(basedir,"Logs","log-%s-*.txt"%cfg.unit_id))[0]
+    input_info=os.path.basename(input_file).split('-')
+    raw_path = os.path.join("CHIP%s"%input_info[1],input_info[2],input_info[3].strip('.txt'))
+
+    summary = SocketTestSummary(input_file, raw_path)
     summary.process_file()
 
