@@ -25,8 +25,8 @@ class SocketTestSummary(object):
         lines = open(self.summary_file).readlines()
         all_results = []
         stanza = None
-        i = 0
         j = 1
+        i = self._read_file_header(lines)
         while (i < len(lines)):
             if lines[i].startswith('chip') :
                 if stanza is not None:
@@ -46,6 +46,14 @@ class SocketTestSummary(object):
         lcatr.schema.write_file(all_results)
         lcatr.schema.validate_file()
 
+    def _read_file_header(self, lines):
+        header = []
+        i=0
+        while (lines[i].startswith('#') ):
+            header.append(lines[i])
+            i=i+1
+        #this is temporary : we should be doing something with the header?
+        return i
     def _parse_header_line(self, line):
         tokens = line.split()
         data = {'chip_id' : tokens[0],
