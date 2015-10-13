@@ -17,11 +17,11 @@ class SocketTestSummary(object):
     def __init__(self, summary_file, rawfile_path):
         self.summary_file = summary_file
         self.rawfile_path = rawfile_path
+        self.all_results = []
     def _test_type(self, line):
         return line.split()[4]
     def run_validator(self, test_type, stanza):
-        exec("result = self.validate%s(stanza)" % self._mapping[test_type])
-        return result
+        exec("self.validate%s(stanza)" % self._mapping[test_type])
     def process_file(self):
         lines = open(self.summary_file).readlines()
         all_results = []
@@ -33,7 +33,7 @@ class SocketTestSummary(object):
                 if stanza is not None:
                     # Process the existing stanza
                     j+=1
-                    all_results.append(self.run_validator(test_type, stanza))
+                    self.run_validator(test_type, stanza)
                 test_type = self._test_type(lines[i])
                 stanza = []
             if lines[i].strip() != '':
@@ -42,9 +42,9 @@ class SocketTestSummary(object):
             i += 1
         #need to run the very last stanza separately, as the files
         #do not stop with a line starting with 'chip'.
-        all_results.append(self.run_validator(test_type, stanza))
+        self.run_validator(test_type, stanza)
         print "number of stanzas processed : ", j
-        lcatr.schema.write_file(all_results)
+        lcatr.schema.write_file(self.all_results)
         lcatr.schema.validate_file()
 
     def _read_file_header(self, lines):
@@ -67,34 +67,33 @@ class SocketTestSummary(object):
                 'activity_description' : ' '.join(tokens[8:])}
 
         relpath = os.path.join(self.rawfile_path,data['data_file'])
-        print relpath, os.path.exists(relpath)
-        lcatr.schema.fileref.make(os.path.relpath(relpath))
-        return data
+        fileref = lcatr.schema.fileref.make(os.path.relpath(relpath))
+        return data, fileref
     def validate_temp(self, stanza):
-        data = self._parse_header_line(stanza[0])
+        data, fileref = self._parse_header_line(stanza[0])
         data['test_passed'] = stanza[1].startswith('Passed')
         data['temperature'] = float(stanza[3].strip())
         data['power_level'] = float(stanza[4].strip())
-        return validate('aspic_temp', **data)
+        self.all_results.extend([validate('aspic_temp', **data), fileref])
     def validate_channel(self, stanza):
-        data = self._parse_header_line(stanza[0])
+        data, fileref = self._parse_header_line(stanza[0])
         data['BEB_temperature'] = 0.  # to be filled
         data['test_passed'] = stanza[1].startswith('Passed')
         for i in range(0, 8):
             data['channel_%02i' % i] = float(stanza[3 + i].split()[0])
-        return validate('aspic_channel_info', **data)
+        self.all_results.extend([validate('aspic_channel_info', **data), fileref])
     def validate_noise(self, stanza):
-        data = self._parse_header_line(stanza[0])
+        data, fileref = self._parse_header_line(stanza[0])
         data['test_passed'] = stanza[1].startswith('Passed')
         data['BEB_temperature'] = 0.  # to be filled
         for i, value in zip(range(8), stanza[3].split()):
             data['channel_%02i' % i] = float(value)
-        return validate('aspic_noise_info', **data)
+        self.all_results.extend([validate('aspic_noise_info', **data), fileref])
     def validate_pass_fail(self, stanza):
-        data = self._parse_header_line(stanza[0])
+        data, fileref = self._parse_header_line(stanza[0])
         data['BEB_temperature'] = 0.  # to be filled
         data['test_passed'] = stanza[1].startswith('Passed')
-        return validate('aspic_pass_fail', **data)
+        self.all_results.extend([validate('aspic_pass_fail', **data), fileref])
 
 if __name__ == "__main__":
     import sys, glob
