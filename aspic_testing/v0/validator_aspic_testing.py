@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import lcatr.schema
+import siteUtils
 import os
 
 def validate(schema, **kwds):
@@ -17,14 +18,13 @@ class SocketTestSummary(object):
     def __init__(self, summary_file, rawfile_path):
         self.summary_file = summary_file
         self.rawfile_path = rawfile_path
-        self.all_results = []
+        self.all_results = [siteUtils.packageVersions()]
     def _test_type(self, line):
         return line.split()[4]
     def run_validator(self, test_type, stanza):
         exec("self.validate%s(stanza)" % self._mapping[test_type])
     def process_file(self):
         lines = open(self.summary_file).readlines()
-        all_results = []
         stanza = None
         j = 1
         i = self._read_file_header(lines)
