@@ -62,7 +62,8 @@ class SocketTestSummary(object):
                 'RC' : tokens[2][2:],
                 'clock_file' : tokens[3],
                 'test_type' : tokens[4],
-                'attenuator_start' : tokens[5],
+                'BEB_temperature' : tokens[5][2:],
+                'attenuator_start' : tokens[6],
                 'data_file' : tokens[7],
                 'activity_description' : ' '.join(tokens[8:])}
 
@@ -77,7 +78,6 @@ class SocketTestSummary(object):
         self.all_results.extend([validate('aspic_temp', **data), fileref])
     def validate_channel(self, stanza):
         data, fileref = self._parse_header_line(stanza[0])
-        data['BEB_temperature'] = 0.  # to be filled
         data['test_passed'] = stanza[1].startswith('Passed')
         for i in range(0, 8):
             data['channel_%02i' % i] = float(stanza[3 + i].split()[0])
@@ -85,13 +85,11 @@ class SocketTestSummary(object):
     def validate_noise(self, stanza):
         data, fileref = self._parse_header_line(stanza[0])
         data['test_passed'] = stanza[1].startswith('Passed')
-        data['BEB_temperature'] = 0.  # to be filled
         for i, value in zip(range(8), stanza[3].split()):
             data['channel_%02i' % i] = float(value)
         self.all_results.extend([validate('aspic_noise_info', **data), fileref])
     def validate_pass_fail(self, stanza):
         data, fileref = self._parse_header_line(stanza[0])
-        data['BEB_temperature'] = 0.  # to be filled
         data['test_passed'] = stanza[1].startswith('Passed')
         self.all_results.extend([validate('aspic_pass_fail', **data), fileref])
 
