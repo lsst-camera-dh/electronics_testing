@@ -18,7 +18,12 @@ class SocketTestSummary(object):
     def __init__(self, summary_file, rawfile_path):
         self.summary_file = summary_file
         self.rawfile_path = rawfile_path
-        self.all_results = [siteUtils.packageVersions()]
+        #needs to take a decision on where to put the summary_file
+        #for now it stays at the top of the directory structure in the database
+        #relpath = os.path.join(self.rawfile_path, self.summary_file)
+        relpath = summary_file
+        fileref = lcatr.schema.fileref.make(relpath)
+        self.all_results = [siteUtils.packageVersions(), fileref]
     def _test_type(self, line):
         return line.split()[4]
     def run_validator(self, test_type, stanza):
@@ -101,7 +106,8 @@ if __name__ == "__main__":
     cfg=config.Config()
     #defined as a symlink by the producer script
     basedir = os.environ['ASPIC_BASE_DIR']
-    input_file = glob.glob(os.path.join(basedir,"Logs","log-%s-*.txt"%cfg.unit_id))[0]
+    input_file = glob.glob(os.path.join(os.curdir,"log-%s-*.txt"%cfg.unit_id))[0]
+    print "Reading ", input_file
     input_info=os.path.basename(input_file).split('-')
     raw_path = os.path.join("CHIP%s"%input_info[1],input_info[2],input_info[3].strip('.txt'))
 
