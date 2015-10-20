@@ -58,13 +58,14 @@ class SocketTestSummary(object):
         while (lines[i].startswith('#') ):
             header.append(lines[i])
             i=i+1
-        #this is temporary : we should be doing something with the header?
+        #this is temporary : we will at least retrieve the LABVIEW code version
+        #on the header line starting with VI
         return i
     def _parse_header_line(self, line):
         tokens = line.split()
         data = {'chip_id' : tokens[0],
-                'GAIN' : tokens[1][1:],
-                'RC' : tokens[2][2:],
+                'GAIN' : tokens[1],
+                'RC' : tokens[2],
                 'clock_file' : tokens[3],
                 'test_type' : tokens[4],
                 'BEB_temperature' : tokens[5][2:],
