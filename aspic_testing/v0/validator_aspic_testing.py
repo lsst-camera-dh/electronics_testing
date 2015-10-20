@@ -23,7 +23,7 @@ class SocketTestSummary(object):
         #relpath = os.path.join(self.rawfile_path, self.summary_file)
         relpath = summary_file
         fileref = lcatr.schema.fileref.make(relpath)
-        self.all_results = [siteUtils.packageVersions(), fileref]
+        self.all_results = [fileref]
     def _test_type(self, line):
         return line.split()[4]
     def run_validator(self, test_type, stanza):
@@ -55,11 +55,16 @@ class SocketTestSummary(object):
     def _read_file_header(self, lines):
         header = []
         i=0
+        labview_version = ""
         while (lines[i].startswith('#') ):
             header.append(lines[i])
             i=i+1
-        #this is temporary : we will at least retrieve the LABVIEW code version
-        #on the header line starting with VI
+            line=lines[i]
+            if line.startswith('#VI'):
+                labview_version = line[line.find('_v'):].strip('.vi\n')[1:]
+        versions = siteUtils.packageVersions()
+        versions['labview_version'] = labview_version
+        self.all_results.append(versions)
         return i
     def _parse_header_line(self, line):
         tokens = line.split()
