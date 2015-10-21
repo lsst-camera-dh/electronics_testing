@@ -53,18 +53,21 @@ class SocketTestSummary(object):
         lcatr.schema.validate_file()
 
     def _read_file_header(self, lines):
-        header = []
         i=0
-        labview_version = ""
+        data = {'summary_file':self.summary_file}
         while (lines[i].startswith('#') ):
-            header.append(lines[i])
-            i=i+1
             line=lines[i]
+            if line.startswith('#setup'):
+                data['activity_location'] = line.split()[1]
+                data['activity_type'] = ' '.join(line.split()[2:])
+            if 'timestamp' in line:
+                data['acquistion_start_time'] = line.split()[1].strip()
+            if 'chip' in line:
+                data['chip_id'] =line.split()[1].strip()
             if line.startswith('#VI'):
-                labview_version = line[line.find('_v'):].strip('.vi\n')[1:]
-        versions = siteUtils.packageVersions()
-        versions['labview_version'] = labview_version
-        self.all_results.append(versions)
+                data['software_version'] = line[line.find('_v'):].strip('.vi\n')[1:]
+            i=i+1
+        self.all_results.extend(lcatr.schema.valid(lcatr.schema.get('aspic_activity'), **data))
         return i
     def _parse_header_line(self, line):
         tokens = line.split()
