@@ -54,7 +54,7 @@ class SocketTestSummary(object):
 
     def _read_file_header(self, lines):
         i=0
-        data = {'summary_file':self.summary_file}
+        data = {'summary_file':os.path.basename(self.summary_file)}
         while (lines[i].startswith('#') ):
             line=lines[i]
             if line.startswith('#setup'):
