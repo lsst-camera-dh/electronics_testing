@@ -117,7 +117,7 @@ if __name__ == "__main__":
     cfg=config.Config()
     #defined as a symlink by the producer script
     basedir = os.environ['ASPIC_BASE_DIR']
-    input_file = glob.glob(os.path.join(os.curdir,"log-%s-*.txt"%cfg.unit_id))[0]
+    input_file = glob.glob("log-%s-*.txt"%cfg.unit_id)[0]
     print "Reading ", input_file
     input_info=os.path.basename(input_file).split('-')
     raw_path = os.path.join("CHIP%s"%input_info[1],input_info[2],input_info[3].strip('.txt'))
