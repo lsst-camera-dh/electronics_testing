@@ -59,7 +59,8 @@ class SocketTestSummary(object):
             line=lines[i]
             if line.startswith('#setup'):
                 data['activity_location'] = line.split()[1]
-                data['activity_type'] = ' '.join(line.split()[2:])
+            if line.startswith('#step'):
+                data['activity_type'] = line.split()[1]
             if 'timestamp' in line:
                 data['acquistion_start_time'] = line.split()[1].strip()
             if 'chip' in line:
@@ -67,7 +68,8 @@ class SocketTestSummary(object):
             if line.startswith('#VI'):
                 data['software_version'] = line[line.find('_v'):].strip('.vi\n')[1:]
             i=i+1
-        self.all_results.extend(lcatr.schema.valid(lcatr.schema.get('aspic_activity'), **data))
+        data['status'] = lines[-1].split()[1]
+        self.all_results.append(lcatr.schema.valid(lcatr.schema.get('aspic_activity'), **data))
         return i
     def _parse_header_line(self, line):
         tokens = line.split()
