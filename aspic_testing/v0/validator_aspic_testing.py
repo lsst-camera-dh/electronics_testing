@@ -116,7 +116,6 @@ if __name__ == "__main__":
     print "executing validator_test_job.py"
     cfg=config.Config()
     #defined as a symlink by the producer script
-    basedir = os.environ['ASPIC_BASE_DIR']
     input_file = glob.glob("log-%s-*.txt"%cfg.unit_id)[0]
     print "Reading ", input_file
     input_info=os.path.basename(input_file).split('-')
