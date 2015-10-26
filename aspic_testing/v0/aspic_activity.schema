@@ -7,5 +7,6 @@
     'activity_location' : str,
     'summary_file' : str,
     'software_version' : str,
-    'acquistion_start_time' : str
+    'acquistion_start_time' : str,
+    'status' : str
 }
