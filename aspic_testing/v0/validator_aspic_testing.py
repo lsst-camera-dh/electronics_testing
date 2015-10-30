@@ -22,8 +22,8 @@ class SocketTestSummary(object):
         #for now it stays at the top of the directory structure in the database
         #relpath = os.path.join(self.rawfile_path, self.summary_file)
         relpath = summary_file
-        fileref = lcatr.schema.fileref.make(relpath)
-        self.all_results = [fileref]
+        #fileref = lcatr.schema.fileref.make(relpath)
+        self.all_results = []#[fileref]
     def _test_type(self, line):
         return line.split()[4]
     def run_validator(self, test_type, stanza):
@@ -91,23 +91,27 @@ class SocketTestSummary(object):
         data['test_passed'] = stanza[1].startswith('Passed')
         data['temperature'] = float(stanza[3].strip())
         data['power_level'] = float(stanza[4].strip())
-        self.all_results.extend([validate('aspic_temp', **data), fileref])
+        #self.all_results.extend([validate('aspic_temp', **data), fileref])
+        self.all_results.extend([validate('aspic_temp', **data)])
     def validate_channel(self, stanza):
         data, fileref = self._parse_header_line(stanza[0])
         data['test_passed'] = stanza[1].startswith('Passed')
         for i in range(0, 8):
             data['channel_%02i' % i] = float(stanza[3 + i].split()[0])
-        self.all_results.extend([validate('aspic_channel_info', **data), fileref])
+        #self.all_results.extend([validate('aspic_channel_info', **data), fileref])
+        self.all_results.extend([validate('aspic_channel_info', **data)])
     def validate_noise(self, stanza):
         data, fileref = self._parse_header_line(stanza[0])
         data['test_passed'] = stanza[1].startswith('Passed')
         for i, value in zip(range(8), stanza[3].split()):
             data['channel_%02i' % i] = float(value)
-        self.all_results.extend([validate('aspic_noise_info', **data), fileref])
+        #self.all_results.extend([validate('aspic_noise_info', **data), fileref])
+        self.all_results.extend([validate('aspic_noise_info', **data)])
     def validate_pass_fail(self, stanza):
         data, fileref = self._parse_header_line(stanza[0])
         data['test_passed'] = stanza[1].startswith('Passed')
-        self.all_results.extend([validate('aspic_pass_fail', **data), fileref])
+        #self.all_results.extend([validate('aspic_pass_fail', **data), fileref])
+        self.all_results.extend([validate('aspic_pass_fail', **data)])
 
 if __name__ == "__main__":
     import sys, glob
