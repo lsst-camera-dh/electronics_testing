@@ -11,5 +11,5 @@
     'data_file' : str,
     'activity_description' : str,
     'BEB_temperature' : float,
-    'test_passed' : bool
+    'test_passed' : int
 }
