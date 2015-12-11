@@ -11,7 +11,7 @@ if not IRODS:
     basedir = "/sps/lsst/DataBE/ASPIC_production"
     logdir = os.path.join(basedir,"Logs")
     chipdir = os.path.join(basedir,"CHIP%s"%uid)
-    input_file =  os.environ['ASPIC_LOGFILE']
+    input_file =  os.environ['LCATR_ASPIC_LOGFILE']
     os.system('cp %s .'%input_file)
     os.system('ln -s %s .'%chipdir)
 else :
