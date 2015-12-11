@@ -3,7 +3,7 @@ import os, glob
 import siteUtils
 print "executing producer_test_job.py"
 
-IRODS = True
+IRODS = False
 
 uid = siteUtils.getUnitId()
 
@@ -11,7 +11,7 @@ if not IRODS:
     basedir = "/sps/lsst/DataBE/ASPIC_production"
     logdir = os.path.join(basedir,"Logs")
     chipdir = os.path.join(basedir,"CHIP%s"%uid)
-    input_file = glob.glob(os.path.join(logdir,"log-%s-*.txt"%uid))[0]
+    input_file =  os.environ['ASPIC_LOGFILE']
     os.system('cp %s .'%input_file)
     os.system('ln -s %s .'%chipdir)
 else :

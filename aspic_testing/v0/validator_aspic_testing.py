@@ -114,13 +114,10 @@ class SocketTestSummary(object):
         self.all_results.extend([validate('aspic_pass_fail', **data)])
 
 if __name__ == "__main__":
-    import sys, glob
-    from lcatr.harness import config
-
-    print "executing validator_test_job.py"
-    cfg=config.Config()
-    #defined as a symlink by the producer script
-    input_file = glob.glob("log-%s-*.txt"%cfg.unit_id)[0]
+    import sys, glob, subprocess
+    uid = siteUtils.getUnitId()
+    print "executing validator_test_job.py for unit id ", uid
+    input_file = glob.glob("log-%s-*.txt"%uid)
     print "Reading ", input_file
     input_info=os.path.basename(input_file).split('-')
     raw_path = os.path.join("CHIP%s"%input_info[1],input_info[2],input_info[3].strip('.txt'))
