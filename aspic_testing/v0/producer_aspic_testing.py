@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import os, glob
+import os, sys
 import siteUtils
 print "executing producer_test_job.py"
 
@@ -11,17 +11,20 @@ if not IRODS:
     basedir = "/sps/lsst/DataBE/ASPIC_production"
     logdir = os.path.join(basedir,"Logs")
     chipdir = os.path.join(basedir,"CHIP%s"%uid)
-    input_file =  os.environ['LCATR_ASPIC_LOGFILE']
+    input_file = os.environ['LCATR_ASPIC_LOGFILE']
+    if input_file =='UNDEFINED':
+        raise KeyError('LCATR_ASPIC_LOGFILE SET TO %s!'%input_file)
     os.system('cp %s .'%input_file)
     os.system('ln -s %s .'%chipdir)
 else :
     basedir = "/lsst-fr/home/lsstcamera/ASPIC_production"
     logdir = os.path.join(basedir,"Logs")
     chipdir = os.path.join(basedir,"CHIP%s"%uid)
-    ss = "filename=`ils %s | grep log-%s`; iget %s/`echo $filename`"%(logdir,uid\
-,logdir)
+    input_file = os.environ['LCATR_ASPIC_LOGFILE']
+    if input_file =='UNDEFINED':
+        pass
+    ss = "iget %s"%input_file
     os.system(ss)
-    input_file = glob.glob('log-%s*'%uid)[0]
     os.system('iget -r %s'%chipdir)
 
 print "copying %s to current directory"%input_file
