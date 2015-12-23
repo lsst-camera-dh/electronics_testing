@@ -32,10 +32,10 @@ for chipdir in chipdirs[2:3]:
 
     #run the JH on each logfile
     print chipdir, chiplogs
-    for log in chiplogs[:1]:
+    for log in chiplogs:
         print 'running harnessed job for ', log
-        myConn.env['LCATR_ASPIC_LOGFILE'] = log
-        print 'setting LCATR_ASPIC_LOGFILE env var to ', myConn.env['LCATR_ASPIC_LOGFILE']
+        myConn.env['ASPIC_LOGFILE'] = log
+        print 'setting ASPIC_LOGFILE env var to ', myConn.env['ASPIC_LOGFILE']
         try:
             myConn.runHarnessed(experimentSN=unit_str,
                                 hardwareId=unit_str,
