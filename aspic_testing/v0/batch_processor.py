@@ -44,7 +44,8 @@ for chipdir in chipdirs[2:3]:
                                 hardwareGroup='LCA-ASPIC',
                                 htype='LCA-ASPIC',
                                 site='CCIN2P3', 
-                                jhInstall='wbf-test')
+#                                jhInstall='wbf-test')
+                                jhInstall='jct-test')
             print "Traveler execution succeeded"
         except Exception,msg:
             print 'Traveler execution failed with exception ', msg
