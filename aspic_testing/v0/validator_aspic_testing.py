@@ -2,7 +2,8 @@
 import lcatr.schema
 import siteUtils
 import os
-
+import subprocess
+ 
 def validate(schema, **kwds):
     results = lcatr.schema.valid(lcatr.schema.get(schema), **kwds)
     return results
@@ -22,7 +23,12 @@ class SocketTestSummary(object):
         #for now it stays at the top of the directory structure in the database
         ##relpath = os.path.join(self.rawfile_path, self.summary_file)
         relpath = summary_file
-        fileref = lcatr.schema.fileref.make(relpath)
+        md = {}
+        for tag in ['#setup', '#step', '#chip', '#timestamp']:
+            out = subprocess.check_output(['sed', '-n', '/%s/p'%tag, relpath])
+            out = out.split('\n')[0]
+            md[tag.strip('#')] = out.strip('%s '%tag)
+        fileref = lcatr.schema.fileref.make(relpath, metadata=md)
         self.all_results = [fileref]
     def _test_type(self, line):
         return line.split()[4]
