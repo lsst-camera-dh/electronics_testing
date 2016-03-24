@@ -19,10 +19,9 @@ for chipdir in chipdirs:
     unit_str = chipdir.split('CHIP')[1]
 
     snid = unit_str
-    #Promex 01xx need to be turned into LCA-11721-ASPIC-P1xx
     if snid[0:2]=='01':
         snid='P1'+snid[2:]
-    snid='LCA-11721-ASPIC-'+snid
+    snid='LCA-11721-ASPIC'+snid
 
 
     chiplogs = filter(lambda x: 'log-%s'%unit_str in x, logfiles)

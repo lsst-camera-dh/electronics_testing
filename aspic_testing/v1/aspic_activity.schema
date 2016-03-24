@@ -1,0 +1,12 @@
+# -*- python -*-
+{
+    'schema_name' : 'aspic_activity',
+    'schema_version' : 0,
+    'chip_id' : str,
+    'activity_type' : str,
+    'activity_location' : str,
+    'summary_file' : str,
+    'software_version' : str,
+    'acquistion_start_time' : str,
+    'status' : str
+}

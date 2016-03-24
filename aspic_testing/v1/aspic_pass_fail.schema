@@ -1,0 +1,15 @@
+# -*- python -*-
+{
+    'schema_name' : 'aspic_pass_fail',
+    'schema_version' : 0,
+    'chip_id' : str,
+    'test_type' : str,
+    'GAIN' : str,
+    'RC' : str,
+    'clock_file' : str,
+    'attenuator_start' : str, 
+    'data_file' : str,
+    'activity_description' : str,
+    'BEB_temperature' : float,
+    'test_passed' : int
+}

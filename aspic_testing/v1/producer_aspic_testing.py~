@@ -6,9 +6,11 @@ print "executing producer_test_job.py"
 IRODS = False
 
 uid = siteUtils.getUnitId()
-print "Running ASPIC PRODUCER on ", uid
+print "TOTO 1", uid
 uid=uid.split('LCA-11721-ASPIC-')[1]
+print "TOTO 2", uid
 uid=uid.replace('P', '0')
+print "TOTO 3", uid
 
 if not IRODS:
     basedir = "/sps/lsst/DataBE/ASPIC_production"
