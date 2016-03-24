@@ -1,0 +1,11 @@
+Name: FCS-Assembly
+HardwareGroup:  empty
+Version: next
+ShortDescription: None for now
+Sequence:
+   -  Name: FCS-Assembly-action
+      Version: next
+      ShortDescription: Do the assembly
+      Description:  None for now
+      RelationshipTasks:
+        -
