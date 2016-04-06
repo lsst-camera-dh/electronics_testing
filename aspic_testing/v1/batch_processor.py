@@ -63,4 +63,11 @@ for chipdir in chipdirs:
         except Exception,msg:
             print 'Traveler execution failed with exception ', msg
 
-    
+        #finally set the new status of the hardware
+        if 'PostScreening' in log:
+            status = subprocess.check_output(['sed', '-n', '/%s/p'%'#status', log])
+            errorCode = connection.setHardwareStatus(experimentSN=snid, 
+                                                     htype='LCA-11721', 
+                                                     status.split()[1], 
+                                                     reason='set by eTraveler API', 
+                                                     activityId=None)

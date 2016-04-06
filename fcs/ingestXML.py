@@ -22,28 +22,31 @@ class yamlAssembly():
     def registerHardwareType(self, name, rec):
         newId = ''
         try: 
-            newId=myConn.defineHardwareType(name=name, 
-                                            description=rec[7].value,
-                                            subsystem=subsystem,
-                                            batchedFlag=1,
-                                            sequenceWidth='0')
+            newId = myConn.defineHardwareType(name=name, 
+                                              description=rec[7].value,
+                                              subsystem=subsystem,
+                                              batchedFlag=1,
+                                              sequenceWidth='0')
             print 'New hardware type defined.  Returned id is ', newId
         except Exception,msg:
-             print 'Hardware type %s definition failed with exception : %s'%(name,msg.message)
+            if msg.message != "A component type with name %s already exists."%name:
+                print 'Hardware type %s definition failed with exception : %s'%(name,msg.message)
 
     def registerRelationship(self, relname, name):
         newId = ''
         try:
-            myConn.defineRelationshipType(name = relname, 
-                                          description = 'rel type via eT API',
-                                          hardwareTypeName = self._name,
-                                          numItems = 1,
-                                          minorTypeName = name,
-                                          slotNames = 'na'
-                                          )
+            newId = myConn.defineRelationshipType(name = relname, 
+                                                  description = 'rel type via eT API',
+                                                  hardwareTypeName = self._name,
+                                                  numItems = 1,
+                                                  minorTypeName = name,
+                                                  slotNames = 'na'
+                                                  )
             print 'New relationship defined with id ', newId
         except Exception, msg:
-            print 'Relationship definition %s failed with exception : %s'%(relname,msg.message) 
+            if "A relationship type with name %s"%relname not in msg.message:
+                print 'Relationship definition %s failed with exception : %s'%(relname,msg.message)
+        
 
     def save(self, ingest=False):
         filepath=os.path.join(savedir,'%s.yaml'%self._name)
