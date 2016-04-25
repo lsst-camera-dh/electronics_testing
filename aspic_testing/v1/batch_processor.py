@@ -1,4 +1,4 @@
-import glob, os
+import glob, os, subprocess
 from  eTraveler.clientAPI.connection import Connection
 
 data_dir="/sps/lsst/DataBE/ASPIC_production/"
@@ -6,7 +6,7 @@ archive_dir="/lsst-fr/data/camera/ASPIC_data"
 
 
 #chipdirs = glob.glob(os.path.join(data_dir,"CHIP*"))
-chipdirs = glob.glob(os.path.join(data_dir,"CHIP010*"))
+chipdirs = glob.glob(os.path.join(data_dir,"CHIP0101"))
 logdir =  os.path.join(data_dir,'Logs')
 
 logfiles = glob.glob(os.path.join(logdir,"log-*.txt"))
@@ -42,7 +42,8 @@ for chipdir in chipdirs:
 
     #run the JH on each logfile
     print chipdir, chiplogs
-    for log in chiplogs:
+    #for log in chiplogs:
+    for log in ['/sps/lsst/DataBE/ASPIC_production/Logs/log-0101-PostScreening-20151102.txt']:
         print 'running harnessed job for ', log
         myConn.env['ASPIC_LOGFILE'] = log
         print 'setting ASPIC_LOGFILE env var to ', myConn.env['ASPIC_LOGFILE']
@@ -66,8 +67,13 @@ for chipdir in chipdirs:
         #finally set the new status of the hardware
         if 'PostScreening' in log:
             status = subprocess.check_output(['sed', '-n', '/%s/p'%'#status', log])
-            errorCode = connection.setHardwareStatus(experimentSN=snid, 
-                                                     htype='LCA-11721', 
-                                                     status.split()[1], 
-                                                     reason='set by eTraveler API', 
-                                                     activityId=None)
+            status = status.split()[1]
+            if status == 'Pending':
+                log = [l for l in chiplogs if 'ClearPending' in l][0]
+                status = subprocess.check_output(['sed', '-n', '/%s/p'%'#status', log])
+                status = status.split()[1]
+            errorCode = myConn.setHardwareStatus(experimentSN=snid, 
+                                                 htype='LCA-11721', 
+                                                 status=status, 
+                                                 reason='set by eTraveler API', 
+                                                 activityId=None)
