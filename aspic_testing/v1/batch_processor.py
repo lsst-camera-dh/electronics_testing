@@ -6,7 +6,7 @@ archive_dir="/lsst-fr/data/camera/ASPIC_data"
 
 
 #chipdirs = glob.glob(os.path.join(data_dir,"CHIP*"))
-chipdirs = glob.glob(os.path.join(data_dir,"CHIP0101"))
+chipdirs = glob.glob(os.path.join(data_dir,"CHIP0226"))
 logdir =  os.path.join(data_dir,'Logs')
 
 logfiles = glob.glob(os.path.join(logdir,"log-*.txt"))
@@ -19,9 +19,11 @@ for chipdir in chipdirs:
     unit_str = chipdir.split('CHIP')[1]
 
     snid = unit_str
+    manufacturer = "QuikPak"
     #Promex 01xx need to be turned into LCA-11721-ASPIC-P1xx
     if snid[0:2]=='01':
         snid='P1'+snid[2:]
+        manufacturer = "Promex"
     snid='LCA-11721-ASPIC-'+snid
 
 
@@ -30,7 +32,7 @@ for chipdir in chipdirs:
     #register hardware
     try: 
         newId = myConn.registerHardware(htype='LCA-11721', site='CCIN2P3',  
-                                        manufacturer='NA', location='Cabinet',
+                                        manufacturer=manufacturer, location='Cabinet',
                                         experimentSN=snid) 
         print 'New hardware registered.  Returned id is ', newId
     except Exception,msg:
@@ -42,6 +44,7 @@ for chipdir in chipdirs:
 
     #run the JH on each logfile
     print chipdir, chiplogs
+    #for log in ['/sps/lsst/DataBE/ASPIC_production/Logs/log-0366-PostScreening-20160202.txt']:
     for log in chiplogs:
         print 'running harnessed job for ', log
         myConn.env['ASPIC_LOGFILE'] = log
@@ -65,14 +68,33 @@ for chipdir in chipdirs:
 
         #finally set the new status of the hardware
         if 'PostScreening' in log:
+            #first check presence of RefLow3:
+            files = glob.glob(os.path.join(logdir, "log-%s-%s-*.txt"%(unit_str, 'PostReflow3')))
+            if files!=[]:
+                log=files[0]
             status = subprocess.check_output(['sed', '-n', '/%s/p'%'#status', log])
             status = status.split()[1]
+            print log,status
             if status == 'Pending':
                 log = [l for l in chiplogs if 'ClearPending' in l][0]
                 status = subprocess.check_output(['sed', '-n', '/%s/p'%'#status', log])
                 status = status.split()[1]
-            errorCode = myConn.setHardwareStatus(experimentSN=snid, 
-                                                 htype='LCA-11721', 
-                                                 status=status, 
-                                                 reason='set by eTraveler API', 
+            label = status
+            if status in ['Used', 'Reserved']:
+                label = status
+                if label == 'Used':
+                    label = 'Destroyed (Used)'
+                status = 'Rejected'
+
+            print status, label
+            errorCode = myConn.adjustHardwareLabel(experimentSN=snid,
+                                                   htype='LCA-11721',
+                                                   label=label,
+                                                   reason='set by eTraveler API',
+                                                   activityId=None)
+
+            errorCode = myConn.setHardwareStatus(experimentSN=snid,
+                                                 htype='LCA-11721',
+                                                 status=status,
+                                                 reason='set by eTraveler API',
                                                  activityId=None)
