@@ -9,7 +9,7 @@ if not os.path.exists(savedir):
     os.mkdir(savedir)
 print "yaml files will be saved in dir ", savedir
 
-myConn = Connection('jrb', 'Raw', prodServer=False)
+myConn = Connection('jrb', 'Raw', prodServer=True)
 
 
 class yamlAssembly():
