@@ -25,7 +25,7 @@ class yamlAssembly():
             newId = myConn.defineHardwareType(name=name, 
                                               description=rec[7].value,
                                               subsystem=subsystem,
-                                              batchedFlag=1,
+                                              batchedFlag=0,
                                               sequenceWidth='0')
             print 'New hardware type defined.  Returned id is ', newId
         except Exception,msg:
