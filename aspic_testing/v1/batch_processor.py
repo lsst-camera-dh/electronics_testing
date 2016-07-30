@@ -6,13 +6,13 @@ archive_dir="/lsst-fr/data/camera/ASPIC_data"
 
 
 #chipdirs = glob.glob(os.path.join(data_dir,"CHIP*"))
-chipdirs = glob.glob(os.path.join(data_dir,"CHIP0226"))
+chipdirs = glob.glob(os.path.join(data_dir,"CHIP0395"))
 logdir =  os.path.join(data_dir,'Logs')
 
 logfiles = glob.glob(os.path.join(logdir,"log-*.txt"))
 logfiles = filter(lambda x: (not 'try' in x)and(not 'Test' in x)and(('PreScreening' in x)or('PostScreening' in x)or('ClearPending' in x)), logfiles)
 
-myConn = Connection('cohen', 'Dev', prodServer=False)
+myConn = Connection('cohen', db='Dev', prodServer=False)
 
 #for chipdir in chipdirs[2:3]:
 for chipdir in chipdirs:
@@ -98,3 +98,8 @@ for chipdir in chipdirs:
                                                  status=status,
                                                  reason='set by eTraveler API',
                                                  activityId=None)
+
+        #change hardware location
+        errorCode = myConn.setHardwareLocation(experimentSN=snid, htype='LCA-11721',
+                                               siteName='SLAC', locationName='Cabinet')
+        print "hardware location return code: ", errorCode
