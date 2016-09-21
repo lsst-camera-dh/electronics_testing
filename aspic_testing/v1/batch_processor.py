@@ -3,19 +3,6 @@ from  eTraveler.clientAPI.connection import Connection
 from exceptions import ValueError, IndexError
 import numpy as np
 
-# data_dir="/sps/lsst/DataBE/ASPIC_production/"
-# archive_dir="/lsst-fr/data/camera/ASPIC_data"
-
-
-# #chipdirs = glob.glob(os.path.join(data_dir,"CHIP*"))
-# chipdirs = glob.glob(os.path.join(data_dir,"CHIP0395"))
-# logdir =  os.path.join(data_dir,'Logs')
-
-# logfiles = glob.glob(os.path.join(logdir,"log-*.txt"))
-# logfiles = filter(lambda x: (not 'try' in x)and(not 'Test' in x)and(('PreScreening' in x)or('PostScreening' in x)or('ClearPending' in x)), logfiles)
-
-# myConn = Connection('cohen', db='Dev', prodServer=False)
-
 def input_parsing(inputs, move_to=None):
     """
     parse input in order to build the list of requested chip directories, and
@@ -96,7 +83,7 @@ def batch_process(myConn, chipdirs, logfiles, site, location):
                                     hardwareGroup='LCA-11721',
                                     htype='LCA-11721',
                                     site='CCIN2P3', 
-                                    travelerVersion='1',
+                                   # travelerVersion='1',
                                     jhInstall='cohen')
                 print "Traveler execution succeeded"
             except Exception,msg:
