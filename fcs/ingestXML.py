@@ -1,8 +1,24 @@
+#!/bin/env python
+
+"""
+Update eTraveler database from Filter Exchange Hardware description given in an excel file.
+
+Ingest an XML file with hierarchical description of hardware to :
+Register HardwareType in database.
+Register Relationship (parent-child) in database.
+Creates assembly yaml files.
+
+:Example:
+python ingestXML.py test
+
+where test is the directory where the yaml are saved.
+"""
+
 from openpyxl import load_workbook
 from  eTraveler.clientAPI.connection import Connection
 import yaml, os, sys
 
-
+# takes as first argument name of directory where yaml are saved.
 if len(sys.argv) > 1:
     savedir = sys.argv[1]
 else:
