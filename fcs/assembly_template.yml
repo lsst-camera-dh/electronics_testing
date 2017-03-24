@@ -1,11 +1,47 @@
 Name: FCS-Assembly
+Subsystem: empty
 HardwareGroup:  empty
 Version: next
-ShortDescription: None for now
+ShortDescription: Assembly of a EXCH hardware
 Sequence:
+   - 
+      Name: FCS-Assembly-Operator
+      Version: next
+      Description: Enter operator name
+      ShortDescription: Enter information on operator
+      RequiredInputs:
+        -
+          Label: Operator_name
+          Description: Enter operator name 
+          InputSemantics: string
+        -
+          Label: Verification_type
+          Description: Enter verification type
+          InputSemantics: string
+   - 
+      Name: Attach_Documentation
+      Version: next
+      Description: Attach a document for this hardware
+      ShortDescription: Attach associated documentation
+      OptionalInputs:
+        -
+          Label: Documentation
+          Description:  Attach a documentation file
+          InputSemantics: filepath
+   - 
+      Name: Fill_Free_Field
+      Version: next
+      Description: Write some comment on this assembly (optionnal)
+      ShortDescription: Enter information in a free field
+      OptionalInputs:
+        -
+          Label: Information
+          Description: Enter information on assembly 
+          InputSemantics: string
+
+
    -  Name: FCS-Assembly-action
       Version: next
       ShortDescription: Do the assembly
       Description:  None for now
       RelationshipTasks:
-        -
