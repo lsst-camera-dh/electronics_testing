@@ -14,10 +14,12 @@ Sequence:
           Label: Operator_name
           Description: Enter operator name 
           InputSemantics: string
+          Name: operator
         -
           Label: Verification_type
           Description: Enter verification type
           InputSemantics: string
+          Name: verificationType
    - 
       Name: Attach_Documentation
       Version: next
@@ -28,6 +30,7 @@ Sequence:
           Label: Documentation
           Description:  Attach a documentation file
           InputSemantics: filepath
+          Name: documentationFile
    - 
       Name: Fill_Free_Field
       Version: next
@@ -38,6 +41,7 @@ Sequence:
           Label: Information
           Description: Enter information on assembly 
           InputSemantics: string
+          Name: freeComment
 
 
    -  Name: FCS-Assembly-action

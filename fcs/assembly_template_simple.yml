@@ -12,10 +12,12 @@ Sequence:
       RequiredInputs:
         -
           Label: Operator_name
+          Name: operatorName
           Description: Enter operator name 
           InputSemantics: string
         -
           Label: Tests_date
+          Name: testsDate
           Description: Enter tests date
           InputSemantics: string
 -            
@@ -26,6 +28,7 @@ Sequence:
       OptionalInputs:
         -
           Label: Assembly_data_sheet
+          Name: assemblyDataSheet
           Description:  Attach assembly data sheet
           InputSemantics: filepath
 -      
@@ -36,6 +39,7 @@ Sequence:
       OptionalInputs:
         -
           Label: Tests_results
+          Name: testsResults
           Description:  Attach file to describe tests results
           InputSemantics: filepath
 -  
@@ -46,6 +50,7 @@ Sequence:
       OptionalInputs:
         -
           Label: Documentation
+          Name: documentFile
           Description:  Attach a documentation file
           InputSemantics: filepath
 -  
@@ -56,6 +61,7 @@ Sequence:
       OptionalInputs:
         -
           Label: Information
+          Name: comments
           Description: Enter information on assembly 
           InputSemantics: string
 -  
@@ -66,6 +72,7 @@ Sequence:
       RequiredInputs:
         -
           Label: Approbator_name
+          Name: approbatorName
           Description: Enter approbator name 
           InputSemantics: string
 

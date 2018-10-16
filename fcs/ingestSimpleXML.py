@@ -9,24 +9,36 @@ Register Relationship (parent-child) in database.
 Creates assembly yaml files.
 
 :Example:
-python ingestXML.py test
+python ingestXML.py test Autochanger_simple.xlsx CHGR
 
 where test is the directory where the yaml are saved.
 """
 
 from openpyxl import load_workbook
 from  eTraveler.clientAPI.connection import Connection
+
 import yaml, os, sys
+
+print 'sys.path=', sys.path
+from  eTraveler.clientAPI.connection import Connection
+
 
 # takes as first argument name of directory where yaml are saved.
 if len(sys.argv) > 1:
     savedir = sys.argv[1]
 else:
     savedir = 'test'
+if len(sys.argv) > 2:
+    excel_file = sys.argv[2]
+else:
+    excel_file = 'Autochanger_simple.xlsx'
+if len(sys.argv) > 3:
+    subsystem = sys.argv[3]
+else:
+    subsystem = 'CHGR'    
 
-excel_file='AutoChanger_encore_plus_simple.xlsx'
+operator = 'virieux'
 assembly_template_file='assembly_template_simple.yml'
-subsystem = 'EXCH'
 relTaskPos = 6
 
 
@@ -34,7 +46,11 @@ if not os.path.exists(savedir):
     os.mkdir(savedir)
 print "yaml files will be saved in dir ", savedir
 
-myConn = Connection('ftv', 'Raw', prodServer=True)
+print "yaml files will be saved in dir ", savedir
+print "Excel file = ", excel_file
+print "Subsystem = ", subsystem
+
+myConn = Connection(operator, db='Dev', exp='LSST-CAMERA', prodServer=False, localServer=False, appSuffix='', cnfPath='~/.ssh/.etapi.cnf', debug=False )
 
 
 class yamlAssembly():
@@ -81,7 +97,7 @@ class yamlAssembly():
         newId = ''
         try:
             newId = myConn.defineRelationshipType(name = relname, 
-                                                  description = 'rel type via eT API by FV',
+                                                  description = 'rel type via eT API by virieux',
                                                   hardwareTypeName = self._name,
                                                   numItems = 1,
                                                   minorTypeName = name,
@@ -163,11 +179,11 @@ for gg in gen:
         d0 = yamlAssembly(gg)
     if gg[0].value == 1:
         print "### d1 = ", d1
-        print "###################"
+        print "######################"
         if d1 is not None:
             d1.save()
         d0.addRelationship(gg)
-        #d1 = yamlAssembly(gg)
+        d1 = yamlAssembly(gg)
 
 d0.save(ingest=False)
     #     print gg[3].value 
