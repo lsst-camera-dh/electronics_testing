@@ -1,0 +1,66 @@
+%YAML 1.1
+---
+Name: EXCH_Assembly
+Subsystem: empty
+HardwareGroup: empty
+Version: next
+ShortDescription: Assembly of EXCH Hardware
+Sequence:
+-
+   Name: Enter_Operator_Information
+   Description: Enter operator information
+   ShortDescription: Enter information on operator
+   Version: next
+   RequiredInputs:
+   - Label: "Operator name"
+     Name: operatorName
+     Description: Enter operator name
+     InputSemantics: string
+   - Label: "Date of the tests"
+     Name: testsDate
+     Description: Enter tests date
+     InputSemantics: timestamp
+-
+   Name: Enter_Assembly_Data_Sheet
+   Version: next
+   Description: Enter information about the assembly
+   ShortDescription: Enter assembly data sheet
+   RequiredInputs:
+   - Label: "Attach the assembly data sheet"
+     Name: assemblyDataSheet
+     Description:   Attach assembly data sheet
+     InputSemantics: filepath
+-
+   Name: Enter_Documentation
+   Version: next
+   Description: Enter assotiated documentation
+   ShortDescription: Enter assotiated documentation
+   OptionalInputs:
+   - Label: "Attach a document for this hardware"
+     Name: hardwareDocumentation
+     Description:   Attach a documentation file
+     InputSemantics: filepath
+   - Label: "Attach a second document for this hardware"
+     Name: hardwareDocumentation2
+     Description:   Attach a second documentation file
+     InputSemantics: filepath
+-
+   Name: Enter_Comments
+   Version: next
+   Description: Enter comments if needed
+   ShortDescription: Enter comments if needed
+   OptionalInputs:
+   - Label: "Fill free field"
+     Name: comments
+     Description: Enter information in a free field
+     InputSemantics: text
+-
+   Name: Conformity_Approbation
+   Version: next
+   Description: Enter approbator name
+   ShortDescription: Conformity Approbation
+   RequiredInputs:
+   - Label: "Approbator name"
+     Name: approbatorName
+     Description: Enter approbator name
+     InputSemantics: string
